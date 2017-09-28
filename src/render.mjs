@@ -6,7 +6,7 @@ const RenderCss = fs.readFileSync('./assets/render.css')
   .replace(/\n/g, '');
 
 export default async function render(html) {
-  const browser = await puppeteer.launch({ width: 650 });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(build(html));
   const height = await page.$eval('#container', (e) => window.getComputedStyle(e).height);
