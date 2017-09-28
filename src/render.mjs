@@ -21,7 +21,9 @@ export default async function render(html) {
 
 function build(html) {
   const body = Buffer.from(`<html><head>
+<script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js></script>
 <link rel=stylesheet href=https://discordapp.com/assets/c73dece4ea55b592566a83108a4e6ae4.css />
+<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css />
 <style>${RenderCss}</style></head>
 <body><div id=container>${html.replace(/\n/g, '')}</div></body></html>`);
   return `data:text/html;base64,${body.toString('base64')}`;

@@ -19,12 +19,20 @@ glob('./discord-api-docs/docs/**/*.md')
   });
 
 export default function search(query) {
-  const body = [];
-  for (const item of registry) {
-    if (body.length && item.type === 'heading' && item.depth <= body[0].depth) break;
-    if (body.length) body.push(item);
-    const p = distance(item.text.toLowerCase(), query.toLowerCase());
-    if (!item.text || p < 0.87) continue;
+  let selection;
+  for (let i in registry) {
+    const item = registry[i];
+    if (!item.text || item.type !== 'heading') continue;
+    const p = distance(item.text.split('%')[0].toLowerCase(), query.toLowerCase());
+    if (p < 0.85) continue;
+    if (selection && p < selection.p) continue;
+    selection = { i, p };
+  }
+  if (!selection) return null;
+  const body = [registry[selection.i]];
+  for (let i = +selection.i + 1; i < registry.length; i++) {
+    const item = registry[i];
+    if (item.type === 'heading' && item.depth <= body[0].depth) break;
     body.push(item);
   }
   return body;
