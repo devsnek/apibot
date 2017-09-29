@@ -14,7 +14,8 @@ client.on('message', async(message) => {
   const msg = await message.channel.send('**Searching...**');
   const img = await docs(message.content.replace(client.user, '').trim());
   if (!img) return msg.edit('**Could not find docs entry!**');
-  msg.edit({ files: [img] });
+  await msg.delete();
+  message.channel.send({ files: [img] });
 });
 
 client.on('debug', (...x) => log('DEBUG', ...x));
