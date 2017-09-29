@@ -1,11 +1,11 @@
-import git from './git';
+import git, { hash } from './git';
 import log from './log';
 import docs from './docs';
 import Discord from 'discord.js';
 
 import { token } from '../config';
 
-git.then(() => log('DOCS', 'repo updated'));
+git.then(() => log('DOCS', 'repo updated', hash()));
 
 const client = new Discord.Client();
 

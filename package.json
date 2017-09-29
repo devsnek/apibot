@@ -21,7 +21,7 @@
     "glob": "^7.1.2",
     "highlight.js": "^9.12.0",
     "jaro-winkler": "^0.2.8",
-    "puppeteer": "^0.11.0",
+    "puppeteer": "github:devsnek/puppeteer#feature/setContent-options",
     "simple-markdown": "github:devsnek/simple-markdown"
   }
 }

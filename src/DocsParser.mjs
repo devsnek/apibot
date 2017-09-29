@@ -31,10 +31,19 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
       };
     },
     html(node) {
+      const parts = [];
+      for (const part of node.content.split(/({.*?})/g)) {
+        if (part.match(/{.*}/)) {
+          const pieces = part.split(/{(.+)#(.+)\/(.+)}/);
+          parts.push(`<span><a class=http-req-variable>{${pieces[1]}}</a></span>`);
+        } else {
+          parts.push(`<span>${part}</span>`);
+        }
+      }
       return `<div class=http-req>
 <h2 class="${ClassMap.h2} http-req-title">${node.title}</h2>
 <span class=http-req-verb>${node.method}</span>
-<span class=http-req-url>${node.content}</span>
+<span class=http-req-url>${parts.join('')}</span>
 </div>`;
     },
   },
@@ -50,7 +59,7 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
     html(node) {
       return `<div class="alert-box ${node.alertType}">
 <blockquote>
-<span class=${ClassMap.span}>${node.content}</span>
+<span class=${ClassMap.span}>${node.content.map((c) => c.content).join('')}</span>
 </blockquote>
 </div>`;
     },
@@ -59,16 +68,6 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
 
 rules.text.match = (source) =>
   /^[\s\S]+?(?=[^0-9A-Za-z\s\u00c0-\uffff-]|\n\n| {2,}\n|\w+:\S|$)/.exec(source);
-
-function htmlTag(tagName, content, attributes = {}, isClosed = true) {
-  let attributeStr = '';
-  for (const [name, value] in Object.entries(attributes)) {
-    attributeStr += ` ${name}=${value}`;
-  }
-  let unclosedTag = `<${tagName}${attributeStr}>`;
-  if (!isClosed) return unclosedTag;
-  return `${unclosedTag}${content}</${tagName}>`;
-}
 
 export const parser = SimpleMarkdown.parserFor(rules);
 
