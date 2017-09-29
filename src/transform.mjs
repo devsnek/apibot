@@ -1,10 +1,12 @@
-import marked from 'marked';
+// import marked from 'marked';
 import http from 'http';
 import highlightjs from 'highlight.js';
+import { output } from './DocsParser';
 
 const MethodReg = new RegExp(`% (${http.METHODS.join('|')})`);
 const LinkReg = /\{(.+?)#.+?\}/;
 
+/*
 const renderer = new marked.Renderer();
 renderer.code = (code, language) => {
   const validLang = !!(language && highlightjs.getLanguage(language));
@@ -13,6 +15,7 @@ renderer.code = (code, language) => {
 };
 
 marked.setOptions({ renderer });
+*/
 
 export default function transform(elements) {
   elements.links = {};
@@ -29,5 +32,6 @@ export default function transform(elements) {
       elements.splice(+i + 1, 0, { type: 'heading', depth: 3, text: rest });
     }
   }
-  return marked.parser(elements);
+  return output(elements);
+  // return marked.parser(elements);
 }
