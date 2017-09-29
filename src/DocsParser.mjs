@@ -1,5 +1,21 @@
 import SimpleMarkdown from 'simple-markdown';
 
+const ClassMap = {
+  h1: 'h1-adqWBM',
+  h2: 'h2-1QHG2q',
+  h6: 'h6-2zToWC',
+  span: 'paragraph-2rm1XZ',
+  a: 'link-Sh2NcF',
+  pre: 'pre-17I0qV',
+  code: 'code-EK4P48',
+};
+
+const htmlTagOld = SimpleMarkdown.htmlTag;
+SimpleMarkdown.htmlTag = (tagName, content, attributes = {}, isClosed) => {
+  if (tagName in ClassMap) attributes.class = `${attributes.class || ''} ${ClassMap[tagName]}`;
+  return htmlTagOld(tagName, content, attributes, isClosed);
+};
+
 export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
   httpheader: {
     order: SimpleMarkdown.defaultRules.heading.order - 0.5,
@@ -15,7 +31,11 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
       };
     },
     html(node) {
-      console.log(node);
+      return `<div class=http-req>
+<h2 class="${ClassMap.h2} http-req-title">${node.title}</h2>
+<span class=http-req-verb>${node.method}</span>
+<span class=http-req-url>${node.content}</span>
+</div>`;
     },
   },
 
@@ -27,12 +47,28 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
         content: p(content.join('\n'), state),
       };
     },
-    html() {},
+    html(node) {
+      return `<div class="alert-box ${node.alertType}">
+<blockquote>
+<span class=${ClassMap.span}>${node.content}</span>
+</blockquote>
+</div>`;
+    },
   }),
 });
 
 rules.text.match = (source) =>
   /^[\s\S]+?(?=[^0-9A-Za-z\s\u00c0-\uffff-]|\n\n| {2,}\n|\w+:\S|$)/.exec(source);
+
+function htmlTag(tagName, content, attributes = {}, isClosed = true) {
+  let attributeStr = '';
+  for (const [name, value] in Object.entries(attributes)) {
+    attributeStr += ` ${name}=${value}`;
+  }
+  let unclosedTag = `<${tagName}${attributeStr}>`;
+  if (!isClosed) return unclosedTag;
+  return `${unclosedTag}${content}</${tagName}>`;
+}
 
 export const parser = SimpleMarkdown.parserFor(rules);
 

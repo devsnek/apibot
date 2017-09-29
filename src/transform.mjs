@@ -1,21 +1,9 @@
-// import marked from 'marked';
 import http from 'http';
-import highlightjs from 'highlight.js';
+// import highlightjs from 'highlight.js';
 import { output } from './DocsParser';
 
 const MethodReg = new RegExp(`% (${http.METHODS.join('|')})`);
 const LinkReg = /\{(.+?)#.+?\}/;
-
-/*
-const renderer = new marked.Renderer();
-renderer.code = (code, language) => {
-  const validLang = !!(language && highlightjs.getLanguage(language));
-  const highlighted = validLang ? highlightjs.highlight(language, code).value : code;
-  return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
-};
-
-marked.setOptions({ renderer });
-*/
 
 export default function transform(elements) {
   elements.links = {};
@@ -33,5 +21,4 @@ export default function transform(elements) {
     }
   }
   return output(elements);
-  // return marked.parser(elements);
 }

@@ -16,4 +16,13 @@ client.on('message', async(message) => {
   message.channel.send({ files: [img] });
 });
 
+client.on('debug', (...x) => log('DEBUG', ...x));
+client.on('ready', () => {
+  log('CLIENT', 'ready', client.user.tag, client.user.id);
+});
+
 client.login(token);
+
+process.on('unhandledRejection', (err) => {
+  log('UNHANDLED REJECTION', err.stack);
+});
