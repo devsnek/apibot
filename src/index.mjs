@@ -11,9 +11,10 @@ const client = new Discord.Client();
 
 client.on('message', async(message) => {
   if (message.bot || !message.content.startsWith(client.user)) return;
+  const msg = await message.channel.send('**Searching...**');
   const img = await docs(message.content.replace(client.user, '').trim());
-  if (!img) return message.channel.send('Could not find docs entry!');
-  message.channel.send({ files: [img] });
+  if (!img) return msg.edit('**Could not find docs entry!**');
+  msg.edit({ files: [img] });
 });
 
 client.on('debug', (...x) => log('DEBUG', ...x));

@@ -3,6 +3,7 @@ import SimpleMarkdown from 'simple-markdown';
 const ClassMap = {
   h1: 'h1-adqWBM',
   h2: 'h2-1QHG2q',
+  h3: 'h3-yx9K3b',
   h6: 'h6-2zToWC',
   span: 'paragraph-2rm1XZ',
   a: 'link-Sh2NcF',

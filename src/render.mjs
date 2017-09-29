@@ -1,4 +1,6 @@
 import puppeteer from 'puppeteer';
+import _minify from 'html-minifier';
+const minify = _minify.minify;
 
 const debug = !!process.env.DEBUG;
 
@@ -6,7 +8,10 @@ export default async function render(html) {
   const browser = await puppeteer.launch({ headless: !debug });
   const page = await browser.newPage();
   await page.setContent(build(html), { waitUntil: 'networkidle' });
-  const height = await page.$eval('#container', (e) => window.getComputedStyle(e).height);
+  const height = await page.$eval('#container', (container) => {
+    container.firstChild.style.margin = '0px';
+    return window.getComputedStyle(container).height;
+  });
   await page.setViewport({
     width: 650,
     height: parseInt(height) + 25,
@@ -17,13 +22,13 @@ export default async function render(html) {
 }
 
 function build(html) {
-  return `<html><head>
+  return minify(`<html><head>
 <script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js></script>
 <link rel=stylesheet href=https://discordapp.com/assets/c73dece4ea55b592566a83108a4e6ae4.css />
 <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css />
 <style>
 .developers .documentation .http-req .http-req-title {
-    margin: 0px 0 10px!important;
+  margin: 0px 0 10px!important;
 }
 .documentation {
   margin: 10px;
@@ -35,11 +40,13 @@ function build(html) {
 .developers {
   top: 0px !important;
 }
-td { color: hsla(0,0%,100%,.5) !important; }
+td {
+  color: hsla(0,0%,100%,.5) !important;
+}
 </style>
 </head><body>
 <div class=developers><div class=documentation>
 <div id=container>${html}</div>
 </div></div>
-</body></html>`.replace(/\n/g, '');
+</body></html>`);
 }

@@ -4,6 +4,8 @@ import _glob from 'glob';
 import distance from 'jaro-winkler';
 import { parser } from './DocsParser';
 
+const blacklist = ['Change_Log.md', 'Intro.md'];
+
 const glob = util.promisify(_glob);
 
 const registry = [];
@@ -11,6 +13,7 @@ const registry = [];
 glob('./discord-api-docs/docs/**/*.md')
   .then((files) => {
     for (const file of files) {
+      for (const item of blacklist) if (file.includes(item)) continue;
       const content = fs.readFileSync(file).toString();
       const tree = parser(content);
       for (const item of tree) {
