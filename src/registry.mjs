@@ -1,12 +1,9 @@
-import util from 'util';
 import fs from 'fs';
-import _glob from 'glob';
+import glob from './glob';
 import distance from 'jaro-winkler';
 import { parser } from './DocsParser';
 
 const blacklist = ['Change_Log.md', 'Intro.md'];
-
-const glob = util.promisify(_glob);
 
 const registry = [];
 

@@ -50,17 +50,17 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
   },
 
   blockQuote: Object.assign(SimpleMarkdown.defaultRules.blockQuote, {
-    parse(capture, p, state) {
+    parse(capture) {
       const content = capture[0].replace(/^ *> ?/gm, '').split('\n');
       return {
         alertType: content.shift(),
-        content: p(content.join('\n'), state),
+        content: content.join('\n'),
       };
     },
     html(node) {
       return `<div class="alert-box ${node.alertType}">
 <blockquote>
-<span class=${ClassMap.span}>${node.content.map((c) => c.content).join('')}</span>
+<span class=${ClassMap.span}>${node.content}</span>
 </blockquote>
 </div>`;
     },

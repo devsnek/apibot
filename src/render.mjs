@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import _minify from 'html-minifier';
+
 const minify = _minify.minify;
 
 const debug = !!process.env.DEBUG;
@@ -7,7 +8,10 @@ const debug = !!process.env.DEBUG;
 export default async function render(html) {
   const browser = await puppeteer.launch({ headless: !debug });
   const page = await browser.newPage();
-  await page.setContent(build(html), { waitUntil: 'networkidle' });
+  await Promise.all([
+    page.setContent(build(html)),
+    page.waitForNavigation({ waitUntil: 'networkidle' }),
+  ]);
   const height = await page.$eval('#container', (container) => {
     container.firstChild.style.margin = '0px';
     return window.getComputedStyle(container).height;
@@ -21,8 +25,7 @@ export default async function render(html) {
   return buf;
 }
 
-function build(html) {
-  return minify(`<html><head>
+const template = minify(`<html><head>
 <script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js></script>
 <link rel=stylesheet href=https://discordapp.com/assets/c73dece4ea55b592566a83108a4e6ae4.css />
 <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css />
@@ -46,7 +49,10 @@ td {
 </style>
 </head><body>
 <div class=developers><div class=documentation>
-<div id=container>${html}</div>
+<div id=container>{{{HTML}}}</div>
 </div></div>
 </body></html>`);
+
+function build(html) {
+  return template.replace('{{{HTML}}}', html);
 }
