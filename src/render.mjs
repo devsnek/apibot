@@ -1,12 +1,11 @@
 import puppeteer from 'puppeteer';
 import _minify from 'html-minifier';
-
 const minify = _minify.minify;
 
 const debug = !!process.env.DEBUG;
 
 export default async function render(html) {
-  const browser = await puppeteer.launch({ headless: !debug });
+  const browser = await puppeteer.launch({ width: 850, headless: !debug });
   const page = await browser.newPage();
   await Promise.all([
     page.setContent(build(html)),
@@ -17,7 +16,7 @@ export default async function render(html) {
     return window.getComputedStyle(container).height;
   });
   await page.setViewport({
-    width: 650,
+    width: 850,
     height: parseInt(height) + 25,
   });
   const buf = await page.screenshot();
@@ -42,6 +41,7 @@ const template = minify(`<html><head>
 }
 .developers {
   top: 0px !important;
+  background: #2A2D32;
 }
 td {
   color: hsla(0,0%,100%,.5) !important;

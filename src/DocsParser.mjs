@@ -65,11 +65,16 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
 </div>`;
     },
   }),
+
+  paragraph: Object.assign(SimpleMarkdown.defaultRules.paragraph, {
+    html(node, output, state) {
+      return SimpleMarkdown.htmlTag('span', output(node.content, state));
+    },
+  }),
 });
 
 rules.text.match = (source) =>
   /^[\s\S]+?(?=[^0-9A-Za-z\s\u00c0-\uffff-]|\n\n| {2,}\n|\w+:\S|$)/.exec(source);
 
 export const parser = SimpleMarkdown.parserFor(rules);
-
 export const output = SimpleMarkdown.htmlFor(SimpleMarkdown.ruleOutput(rules, 'html'));

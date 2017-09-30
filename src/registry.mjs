@@ -3,7 +3,7 @@ import glob from './glob';
 import distance from 'jaro-winkler';
 import { parser } from './DocsParser';
 
-const blacklist = ['Change_Log.md', 'Intro.md'];
+const blacklist = ['Change_Log.md'];
 
 const registry = [];
 
