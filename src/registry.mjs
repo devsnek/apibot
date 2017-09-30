@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import glob from './glob';
 import distance from 'jaro-winkler';
 import { parser } from './DocsParser';
@@ -9,8 +10,12 @@ const registry = [];
 
 glob('./discord-api-docs/docs/**/*.md')
   .then((files) => {
+    files = files.filter((f) => {
+      f = path.basename(f);
+      for (const item of blacklist) if (item === f) return false;
+      return true;
+    });
     for (const file of files) {
-      for (const item of blacklist) if (file.includes(item)) continue;
       const content = fs.readFileSync(file).toString();
       const tree = parser(content);
       for (const item of tree) {
