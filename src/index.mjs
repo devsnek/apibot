@@ -1,7 +1,8 @@
+import Discord from 'discord.js';
 import git, { hash } from './git';
 import log from './log';
 import docs from './docs';
-import Discord from 'discord.js';
+import raven from './raven';
 
 import { token } from '../config';
 
@@ -26,6 +27,3 @@ client.on('ready', () => {
 
 client.login(token);
 
-process.on('unhandledRejection', (err) => {
-  log('UNHANDLED REJECTION', err.stack);
-});
