@@ -22,7 +22,7 @@
     "highlight.js": "^9.12.0",
     "html-minifier": "^3.5.5",
     "jaro-winkler": "^0.2.8",
-    "puppeteer": "github:devsnek/puppeteer#feature/setContent-options",
+    "puppeteer": "^0.11.0",
     "simple-markdown": "github:devsnek/simple-markdown"
   }
 }

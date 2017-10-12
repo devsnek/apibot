@@ -44,7 +44,8 @@ export default function search(query) {
   const body = [registry[selection.i]];
   for (let i = +selection.i + 1; i < registry.length; i++) {
     const item = registry[i];
-    if (SearchTypes.includes(item.type) && item.level <= body[0].level) break;
+    if (item.type === 'httpheader') break;
+    if (item.type === 'heading' && item.level <= body[0].level) break;
     body.push(item);
   }
   return body;
