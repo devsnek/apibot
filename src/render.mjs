@@ -4,8 +4,10 @@ const minify = _minify.minify;
 
 const debug = !!process.env.DEBUG;
 
+const width = 850;
+
 export default async function render(html) {
-  const browser = await puppeteer.launch({ width: 850, headless: !debug });
+  const browser = await puppeteer.launch({ width, headless: !debug });
   const page = await browser.newPage();
   await Promise.all([
     page.setContent(build(html)),
@@ -16,7 +18,7 @@ export default async function render(html) {
     return window.getComputedStyle(container).height;
   });
   await page.setViewport({
-    width: 850,
+    width,
     height: parseInt(height) + 25,
   });
   const buf = await page.screenshot();
