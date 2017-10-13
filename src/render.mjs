@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import _minify from 'html-minifier';
+import { ClassMap } from './DocsParser';
 const minify = _minify.minify;
 
 const debug = !!process.env.DEBUG;
@@ -32,7 +33,14 @@ const template = minify(`<html><head>
 <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css />
 <style>
 .developers .documentation .http-req .http-req-title {
-  margin: 0px 0 10px!important;
+  margin: 0px 0 10px !important;
+}
+.developers .article {
+  padding: 0px !important;
+}
+.article-inner {
+  max-width: unset !important;
+  padding: 0px !important;
 }
 .documentation {
   margin: 10px;
@@ -48,11 +56,22 @@ const template = minify(`<html><head>
 td {
   color: hsla(0,0%,100%,.5) !important;
 }
+.${ClassMap.pre} {
+  height: auto !important;
+}
+.${ClassMap.code} {
+  display: unset !important;
+}
+.${ClassMap.pre} > .${ClassMap.code} {
+  display: block !important;
+}
 </style>
 </head><body>
-<div class=developers><div class=documentation>
-<div id=container>{{{HTML}}}</div>
-</div></div>
+<div class=developers>
+<div class="article scroller documentation">
+<div class=article-inner>
+<div class=developer-docs id=container>{{{HTML}}}</div>
+</div></div></div>
 </body></html>`);
 
 function build(html) {

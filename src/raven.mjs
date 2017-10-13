@@ -10,9 +10,9 @@ export default raven.config(dsn, {
   environment: process.env.NODE_ENV,
 }).install((err, sendErrFailed, eventId) => {
   if (sendErrFailed) {
-    logger.error('SENTRY FAIL', eventId, err.stack);
+    log('SENTRY FAIL', eventId, err.stack);
   } else {
-    logger.error('SENTRY', eventId);
+    log('SENTRY', eventId);
   }
   process.exit(1);
 });

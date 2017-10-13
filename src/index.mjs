@@ -26,4 +26,7 @@ client.on('ready', () => {
 });
 
 client.login(token);
-
+process.on('unhandledRejection', (promise, err) => {
+  log('Unhandled Rejection', err);
+  raven.captureException(err);
+});

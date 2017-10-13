@@ -1,6 +1,7 @@
 import SimpleMarkdown from 'simple-markdown';
+import highlight from 'highlight.js';
 
-const ClassMap = {
+export const ClassMap = {
   h1: 'h1-adqWBM',
   h2: 'h2-1QHG2q',
   h3: 'h3-yx9K3b',
@@ -13,7 +14,7 @@ const ClassMap = {
 
 const htmlTagOld = SimpleMarkdown.htmlTag;
 SimpleMarkdown.htmlTag = (tagName, content, attributes = {}, isClosed) => {
-  if (tagName in ClassMap) attributes.class = `${attributes.class || ''} ${ClassMap[tagName]}`;
+  if (tagName in ClassMap) attributes.class = `${attributes.class || ''} ${ClassMap[tagName]}`.trim();
   return htmlTagOld(tagName, content, attributes, isClosed);
 };
 
@@ -75,6 +76,18 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
 
 rules.text.match = (source) =>
   /^[\s\S]+?(?=[^0-9A-Za-z\s\u00c0-\uffff-]|\n\n| {2,}\n|\w+:\S|$)/.exec(source);
+
+rules.codeBlock.html = (node, output, state) => {
+  if (node.lang && highlight.getLanguage(node.lang)) {
+    var code = highlight.highlight(node.lang, node.content);
+  }
+  return SimpleMarkdown.htmlTag('pre',
+    SimpleMarkdown.htmlTag('code',
+      code ? code.value : node.content,
+      { class: `hljs scroller ${code ? code.language : ''}`.trim() },
+    )
+  );
+};
 
 export const parser = SimpleMarkdown.parserFor(rules);
 export const output = SimpleMarkdown.htmlFor(SimpleMarkdown.ruleOutput(rules, 'html'));
