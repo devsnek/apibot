@@ -17,7 +17,10 @@ client.on('message', async(message) => {
   client.api.channels(message.channel.id).typing.post();
   const img = await docs(content);
   if (!img) return message.channel.send('**Could not find docs entry!**');
-  message.channel.send({ files: [img] });
+  message.channel.send({ files: [{
+    attachment: img,
+    name: `${content.toLowerCase().replace(/[^a-zA-Z0-9\-_]+/g, '_')}.png`,
+  }] });
 });
 
 client.on('debug', (...x) => log('DEBUG', ...x));
