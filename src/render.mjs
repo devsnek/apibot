@@ -29,7 +29,7 @@ export default async function render(html) {
 
 const template = minify(`<html><head>
 <script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js></script>
-<link rel=stylesheet href=https://discordapp.com/assets/c73dece4ea55b592566a83108a4e6ae4.css />
+<link rel=stylesheet href=https://discordapp.com/assets/c4e9bbb0d4586031feee236e69b69400.css />
 <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css />
 <style>
 .developers .documentation .http-req .http-req-title {
