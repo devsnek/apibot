@@ -14,7 +14,10 @@ glob('./discord-api-docs/docs/**/*.md')
   .then((files) => {
     files = files.filter((f) => {
       f = path.basename(f);
-      for (const item of blacklist) if (item === f) return false;
+      for (const item of blacklist) {
+        if (item === f)
+          return false;
+      }
       return true;
     });
     for (const file of files) {
@@ -22,9 +25,8 @@ glob('./discord-api-docs/docs/**/*.md')
       const content = fs.readFileSync(file).toString();
       const tree = parser(content);
       for (const item of tree) {
-        if (item.content && typeof item.content !== 'string') {
+        if (item.content && typeof item.content !== 'string')
           item.builtContent = item.content.map((c) => c.content).join('');
-        }
         registry.push(item);
       }
     }
@@ -38,17 +40,28 @@ export default function search(query) {
   for (let i in registry) {
     const item = registry[i];
     const content = item.title || item.builtContent || item.content;
-    if (!SearchTypes.includes(item.type) || !content) continue;
-    const p = distance(query, content.split('%')[0].toLowerCase());
-    if (p < 0.85 || (selection && p < selection.p)) continue;
+    if (!SearchTypes.includes(item.type) || !content)
+      continue;
+    const subject = content.split('%')[0].toLowerCase();
+    let subcheck = 0;
+    for (const word of query.split(' ')) {
+      if (subject.includes(word))
+        subcheck++;
+    }
+    const p = distance(query, subject) + (subcheck * 0.10);
+    if (p < 0.85 || (selection && p < selection.p))
+      continue;
     selection = { i, p };
   }
-  if (!selection) return null;
+  if (!selection)
+    return null;
   const body = [registry[selection.i]];
   for (let i = +selection.i + 1; i < registry.length; i++) {
     const item = registry[i];
-    if (item.type === 'httpheader') break;
-    if (item.type === 'heading' && item.level - 1 <= body[0].level) break;
+    if (item.type === 'httpheader')
+      break;
+    if (item.type === 'heading' && item.level - 1 <= body[0].level)
+      break;
     body.push(item);
   }
   return body;

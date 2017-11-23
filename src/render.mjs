@@ -23,7 +23,8 @@ export default async function render(html) {
     height: parseInt(height) + 25,
   });
   const buf = await page.screenshot();
-  if (!debug) await browser.close();
+  if (!debug)
+    await browser.close();
   return buf;
 }
 

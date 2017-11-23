@@ -14,7 +14,8 @@ export const ClassMap = {
 
 const htmlTagOld = SimpleMarkdown.htmlTag;
 SimpleMarkdown.htmlTag = (tagName, content, attributes = {}, isClosed) => {
-  if (tagName in ClassMap) attributes.class = `${attributes.class || ''} ${ClassMap[tagName]}`.trim();
+  if (tagName in ClassMap)
+    attributes.class = `${attributes.class || ''} ${ClassMap[tagName]}`.trim();
   return htmlTagOld(tagName, content, attributes, isClosed);
 };
 
@@ -77,10 +78,10 @@ export const rules = Object.assign({}, SimpleMarkdown.defaultRules, {
 rules.text.match = (source) =>
   /^[\s\S]+?(?=[^0-9A-Za-z\s\u00c0-\uffff-]|\n\n| {2,}\n|\w+:\S|$)/.exec(source);
 
-rules.codeBlock.html = (node, output, state) => {
-  if (node.lang && highlight.getLanguage(node.lang)) {
+rules.codeBlock.html = (node) => {
+  if (node.lang && highlight.getLanguage(node.lang))
     var code = highlight.highlight(node.lang, node.content);
-  }
+
   return SimpleMarkdown.htmlTag('pre',
     SimpleMarkdown.htmlTag('code',
       code ? code.value : node.content,

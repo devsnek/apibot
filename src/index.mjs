@@ -11,12 +11,15 @@ git.then(() => log('DOCS', 'repo updated', hash()));
 const client = new Discord.Client();
 
 client.on('message', async(message) => {
-  if (message.bot || !message.content.startsWith(client.user)) return;
+  if (message.bot || !message.content.startsWith(client.user))
+    return;
   const content = message.content.replace(client.user, '').trim();
-  if (!content) return;
+  if (!content)
+    return;
   client.api.channels(message.channel.id).typing.post();
   const img = await docs(content);
-  if (!img) return message.channel.send('**Could not find docs entry!**');
+  if (!img)
+    return message.channel.send('**Could not find docs entry!**');
   message.channel.send({ files: [{
     attachment: img,
     name: `${content.toLowerCase().replace(/[^a-zA-Z0-9\-_]+/g, '_')}.png`,
