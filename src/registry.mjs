@@ -4,34 +4,46 @@ import glob from './glob';
 import distance from 'jaro-winkler';
 import { parser } from './DocsParser';
 import log from './log';
+import git, { hash } from './git';
 
 const blacklist = ['Change_Log.md'];
 
-const registry = [];
+let registry;
 const SearchTypes = ['heading', 'httpheader'];
 
-glob('./discord-api-docs/docs/**/*.md')
-  .then((files) => {
-    files = files.filter((f) => {
-      f = path.basename(f);
-      for (const item of blacklist) {
-        if (item === f)
-          return false;
+update();
+
+export async function update() {
+  await git();
+  log('DOCS', 'repo updated', hash());
+  return build().then(() => true, () => false);
+}
+
+export function build() {
+  registry = [];
+  return glob('./discord-api-docs/docs/**/*.md')
+    .then((files) => {
+      files = files.filter((f) => {
+        f = path.basename(f);
+        for (const item of blacklist) {
+          if (item === f)
+            return false;
+        }
+        return true;
+      });
+      for (const file of files) {
+        log('REGISTRY', 'loaded file', file);
+        const content = fs.readFileSync(file).toString();
+        const tree = parser(content);
+        for (const item of tree) {
+          if (item.content && typeof item.content !== 'string')
+            item.builtContent = item.content.map((c) => c.content).join('');
+          registry.push(item);
+        }
       }
-      return true;
+      return registry;
     });
-    for (const file of files) {
-      log('REGISTRY', 'loaded file', file);
-      const content = fs.readFileSync(file).toString();
-      const tree = parser(content);
-      for (const item of tree) {
-        if (item.content && typeof item.content !== 'string')
-          item.builtContent = item.content.map((c) => c.content).join('');
-        registry.push(item);
-      }
-    }
-    return registry;
-  });
+}
 
 
 export default function search(query) {
