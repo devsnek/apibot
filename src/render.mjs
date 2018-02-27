@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import _minify from 'html-minifier';
 import { ClassMap } from './DocsParser';
-const minify = _minify.minify;
+const { minify } = _minify;
 
 const debug = !!process.env.DEBUG;
 
@@ -31,6 +31,7 @@ export default async function render(html) {
 const template = minify(`<html><head>
 <script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js></script>
 <link rel=stylesheet href=https://discordapp.com/assets/c4e9bbb0d4586031feee236e69b69400.css />
+<link rel=stylesheet href=https://discordapp.com/assets/39bbfabe94fd88c450b3db913fb86166.css />
 <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css />
 <style>
 .developers .documentation .http-req .http-req-title {
